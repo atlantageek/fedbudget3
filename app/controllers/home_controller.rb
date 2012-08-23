@@ -18,13 +18,20 @@ class HomeController < ApplicationController
     config = YAML::load(File.open("#{Rails.root}/config/facebook.yml"));
      if (!params.key?('access_token'))
        logger.debug("A")
-       redirect_to "https://graph.facebook.com/oauth/access_token?client_id=#{config['development']['app_id']}&redirect_uri=#{CALLBACK_URI}&client_secret=#{config['development']['client_secret']}&code=#{params['code']}"
-       return
+       url_str = "https://graph.facebook.com/oauth/access_token?client_id=#{config['development']['app_id']}&redirect_uri=#{CALLBACK_URI}&client_secret=#{config['development']['client_secret']}&code=#{params['code']}"
+       logger.debug url_str
+       url=URI.parse(url_str)
+       http= Net::HTTP.new(url.host, url.port)
+         http.use_ssl = true
+         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+       request = Net::HTTP::Get.new(url.request_uri)
+
+       response = http.request(request)
+       acc_token=response.body.split('=',2)[1]
+        logger.debug(acc_token)
+       #access_token = r.to_json['access_token']
+       #@name=@me.name
      end
-       logger.debug("B")
-     access_token = params['access_token']
-     @me = FbGraph::User.me(ACCESS_TOKEN)
-     @name=@me.name
  
      end
 end
