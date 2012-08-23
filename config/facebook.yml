@@ -1,0 +1,13 @@
+#config/facebook.yml
+ development: &defaults
+   app_id: 192236750829133
+   client_id: 192236750829133
+   client_secret: 13da0305aed83fc951694c31c6e29855
+   perms: offline_access,manage_pages
+   page_id: #the facebook page id that you wish you pull events from
+ 
+ test:
+   <<: *defaults
+ 
+ production:
+   <<: *defaults
